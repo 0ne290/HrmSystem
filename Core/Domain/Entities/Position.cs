@@ -12,7 +12,7 @@ public class Position
         Guid = guid;
     }
 
-    public override string ToString() => Name;
+    public override string ToString() => Title;
 
     public string Guid { get; } = null!;
 

@@ -67,18 +67,18 @@ public class Employee
         }
     }
 
-    public decimal SalaryRate
+    public decimal PremiumRate
     {
-        get => _salaryRate;
+        get => _premiumRate;
         set
         {
             
         }
     }
 
-    public decimal SalaryRateCoefficient
+    public decimal SalaryRate
     {
-        get => _salaryRateCoefficient;
+        get => _salaryRate;
         set
         {
             
@@ -95,9 +95,9 @@ public class Employee
 
     private int _efficiency;
     
-    private decimal _salaryRate;
+    private decimal _premiumRate;
     
-    private decimal _salaryRateCoefficient;
+    private decimal _salaryRate;
 
     private const string StaticPartOfSalt = "68E76087E32C8849FB0AF7E2C68845D3F770601D72E7F6AC568225709DE19D3C814AFF290F14870982538349224A88EF97C7BF4646336CBFAD906CFA1ADA74A8";
 }
