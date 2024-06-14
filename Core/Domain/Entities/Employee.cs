@@ -63,13 +63,25 @@ public class Employee
         get => _efficiency;
         set
         {
+            _efficiency = value;
             
+            CalculatePremium();
+            CalculateSalary();
         }
     }
 
     private void CalculatePremium()
     {
-        var premiumRateCoefficient = 
+        if (_efficiency < 65)
+            var valueOfScale = 65;
+        else if (_efficiency > 135)
+            var valueOfScale = 135;
+        else
+            var valueOfScale = _efficiency;
+        
+        var premiumRateCoefficient = _valueOfScaleToCoefficient(valueOfScale);
+
+        Premium = PremiumRate * premiumRateCoefficient;
     }
 
     public decimal PremiumRate
@@ -77,7 +89,10 @@ public class Employee
         get => _premiumRate;
         set
         {
+            _premiumRate = value;
             
+            CalculatePremium();
+            CalculateSalary();
         }
     }
     
@@ -88,9 +103,13 @@ public class Employee
         get => _salaryRate;
         set
         {
-            
+            _salaryRate = value;
+
+            CalculateSalary();
         }
     }
+
+    private void CalculateSalary() => Salary = SalaryRate + Premium;
 
     public decimal Salary { get; private set; }
 
@@ -107,4 +126,6 @@ public class Employee
     private decimal _salaryRate;
 
     private const string StaticPartOfSalt = "68E76087E32C8849FB0AF7E2C68845D3F770601D72E7F6AC568225709DE19D3C814AFF290F14870982538349224A88EF97C7BF4646336CBFAD906CFA1ADA74A8";
+
+    private static readonly Func<double, double> _valueOfScaleToCoefficient = LinearFunctionCreator.FromTwoPoint((65, 0), (135, 2));
 }
