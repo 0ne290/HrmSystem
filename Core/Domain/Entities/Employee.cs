@@ -67,6 +67,11 @@ public class Employee
         }
     }
 
+    private void CalculatePremium()
+    {
+        var premiumRateCoefficient = 
+    }
+
     public decimal PremiumRate
     {
         get => _premiumRate;
@@ -75,6 +80,8 @@ public class Employee
             
         }
     }
+    
+    public decimal Premium { get; private set; }
 
     public decimal SalaryRate
     {
