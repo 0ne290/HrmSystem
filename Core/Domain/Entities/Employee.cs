@@ -11,13 +11,16 @@ public class Employee
     }
 
     // Constructor for EF
-    private Employee(string dynamicPartOfSalt, string password, int efficiency, decimal salaryRate, decimal salaryRateCoefficient)
+    private Employee(string dynamicPartOfSalt, string password, int efficiency, decimal premiumRate, decimal premium, decimal salaryRate, decimal salary)
     {
-        DynamicPartOfSalt = dynamicPartOfSalt;
         _password = password;
         _efficiency = efficiency;
+        _premiumRate = premiumRate;
         _salaryRate = salaryRate;
-        _salaryRateCoefficient = salaryRateCoefficient;
+        
+        DynamicPartOfSalt = dynamicPartOfSalt;
+        Premium = premium;
+        Salary = salary;
     }
 
     public string DynamicPartOfSalt { get; } = null!;
@@ -70,30 +73,30 @@ public class Employee
         }
     }
 
-    private void CalculatePremium()
-    {
-        if (_efficiency < 65)
-            var valueOfScale = 65;
-        else if (_efficiency > 135)
-            var valueOfScale = 135;
-        else
-            var valueOfScale = _efficiency;
-        
-        var premiumRateCoefficient = _valueOfScaleToCoefficient(valueOfScale);
-
-        Premium = PremiumRate * premiumRateCoefficient;
-    }
-
     public decimal PremiumRate
     {
         get => _premiumRate;
         set
         {
             _premiumRate = value;
-            
+
             CalculatePremium();
             CalculateSalary();
         }
+    }
+
+    private void CalculatePremium()
+    {
+        var valueOfScale = _efficiency switch
+        {
+            < 65 => 65,
+            > 135 => 135,
+            _ => _efficiency
+        };
+
+        var premiumRateCoefficient = ValueOfScaleToCoefficient(valueOfScale);
+
+        Premium = PremiumRate * premiumRateCoefficient;
     }
     
     public decimal Premium { get; private set; }
@@ -115,7 +118,7 @@ public class Employee
 
     public string PositionGuid { get; set; } = null!;
 
-    public virtual Position? Position { get; set; }
+    public virtual Position? PositionNavigation { get; set; }
 
     private string _password = null!;
 
@@ -127,5 +130,5 @@ public class Employee
 
     private const string StaticPartOfSalt = "68E76087E32C8849FB0AF7E2C68845D3F770601D72E7F6AC568225709DE19D3C814AFF290F14870982538349224A88EF97C7BF4646336CBFAD906CFA1ADA74A8";
 
-    private static readonly Func<double, double> _valueOfScaleToCoefficient = LinearFunctionCreator.FromTwoPoint((65, 0), (135, 2));
+    private static readonly Func<decimal, decimal> ValueOfScaleToCoefficient = LinearFunctionCreator.FromTwoPoint((65, 0), (135, 2));
 }
