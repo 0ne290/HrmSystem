@@ -1,0 +1,2 @@
+@using Microsoft.AspNetCore.Http.Extensions
+<h1>Processing of the request failed. Please provide technical support with the URL, time and request ID</h1><h2>URL: @Context.Request.GetEncodedUrl()<br/>Time: @DateTime.Now<br/>Request ID: @Context.TraceIdentifier<br/>Technical support contact: </h2>

@@ -13,21 +13,21 @@ public sealed class HrmSystemContext : DbContext
             .UseCollation("utf8mb3_general_ci")
             .HasCharSet("utf8mb3");
 
-        modelBuilder.Entity<Driver>(entity =>
+        modelBuilder.Entity<Position>(entity =>
         {
             entity.HasKey(e => e.Guid).HasName("PRIMARY");
 
-            entity.ToTable("driver");
+            entity.ToTable("position");
 
             entity.Property(e => e.Guid).HasMaxLength(36);
-            entity.Property(e => e.Name).HasMaxLength(45);
+            entity.Property(e => e.Title).HasMaxLength(128);
         });
 
         modelBuilder.Entity<Employee>(entity =>
         {
             entity.HasKey(e => e.Login).HasName("PRIMARY");
 
-            entity.ToTable("user");
+            entity.ToTable("employee");
 
             entity.HasIndex(e => e.Password, "Password_UNIQUE").IsUnique();
 
@@ -39,8 +39,8 @@ public sealed class HrmSystemContext : DbContext
             entity.Property(e => e.CurrentProjectUrl).HasMaxLength(128);
             entity.Property(e => e.PremiumRate).HasPrecision(56, 28);
             entity.Property(e => e.Premium).HasPrecision(56, 28);
-            entity.Property(e => e.PremiumRate).HasPrecision(56, 28);
-            entity.Property(e => e.PremiumRate).HasPrecision(56, 28);
+            entity.Property(e => e.SalaryRate).HasPrecision(56, 28);
+            entity.Property(e => e.Salary).HasPrecision(56, 28);
 
            entity.HasOne(e => e.PositionNavigation).WithMany(p => p.Employees)
                .HasForeignKey(d => d.PositionGuid)
