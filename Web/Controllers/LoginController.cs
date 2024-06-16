@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace Web.Controllers;
 
 [Route("login")]
-public class LoginController(EmployeeInteractor employeeInteractor, ILogger<LoginController> logger) : Controller
+public class LoginController(EmployeeIntreractor employeeIntreractor, ILogger<LoginController> logger) : Controller
 {
     [HttpGet]
     [Route("employee")]
     public IActionResult GetEmployee()
     {
-        return View("User");
+        return View("Employee");
     }
     
     [HttpGet]
@@ -28,7 +28,7 @@ public class LoginController(EmployeeInteractor employeeInteractor, ILogger<Logi
     [Route("employee")]
     public async Task<IActionResult> PostEmployee(string login, string password, string remember)// Тогда действия входа должны возвращать 200 или 400. Если 200, то JavaScript-код на клиенте сам выполнит переадресацию. Если 400 - встроит в документ сообщение о неправильном вводе
     {
-        if (!await employeeInteractor.Login(login, password))
+        if (!await employeeIntreractor.TryLogin(login, password))
             return BadRequest();
         
         var claims = new[] { new Claim(ClaimTypes.Name, login), new Claim(ClaimTypes.Role, "Employee") };

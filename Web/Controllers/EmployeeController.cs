@@ -9,7 +9,7 @@ namespace Web.Controllers;
 
 [Authorize(Roles = "Employee")]
 [Route("employee")]
-public class EmployeeController(EmployeeInteractor employeeInteractor, ILogger<EmployeeController> logger) : Controller
+public class EmployeeController(EmployeeIntreractor employeeIntreractor, ILogger<EmployeeController> logger) : Controller
 {
     [HttpGet]
     [Route("salary")]
@@ -17,9 +17,9 @@ public class EmployeeController(EmployeeInteractor employeeInteractor, ILogger<E
     {
         var login = HttpContext.User.FindFirst(ClaimTypes.Name)!.Value;
         
-        var orders = await userInteractor.GetAllOrders(login);
+        var salary = await employeeIntreractor.TryGetSalary(login);
         
-        return View("Orders", orders);
+        return View("Salary", salary);
     }
     
     [HttpGet]
@@ -28,10 +28,10 @@ public class EmployeeController(EmployeeInteractor employeeInteractor, ILogger<E
     {
         var login = HttpContext.User.FindFirst(ClaimTypes.Name)!.Value;
         
-        var user = await userInteractor.GetUser(login);
+        var work = await employeeIntreractor.TryGetWork(login);
         
-        if (user != null)
-            return View("Edit", user);
+        if (work != null)
+            return View("Work", work);
         
         logger.LogError("User with login {login} does not exist", login);
         return ActionResultFactory.CustomServerErrorView(this);
@@ -40,9 +40,9 @@ public class EmployeeController(EmployeeInteractor employeeInteractor, ILogger<E
     
     [HttpPost]
     [Route("work")]
-    public async Task<IActionResult> PostWork(string login, string password, string name, string contact, string defaultAddress)
+    public async Task<IActionResult> PostWork(string currentProjectUrl, bool projectCompleted)
     {
-        if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(contact))
+        if (string.IsNullOrEmpty(currentProjectUrl))
             return BadRequest();
 
         var lodLogin = HttpContext.User.FindFirst(ClaimTypes.Name)!.Value;

@@ -13,14 +13,12 @@
     <div style="display: flex; gap: 2%; width: 50%">
         @if (Context.User.IsInRole("Employee"))
         {
-            <div style="width: 22%; background: #e6b333; color: #1a3373; display: flex; justify-content: center; align-items: center; cursor: pointer; border-radius: 3px;" onclick="window.location='/user/orders';">Мои заказы</div>
-            <div style="width: 22%; background: #e6b333; color: #1a3373; display: flex; justify-content: center; align-items: center; cursor: pointer; border-radius: 3px;" onclick="window.location='/user/create-order';">Сделать заказ</div>
-            <div style="width: 22%; background: #e6b333; color: #1a3373; display: flex; justify-content: center; align-items: center; cursor: pointer; border-radius: 3px;" onclick="window.location='/user/edit';">Настройки профиля</div>
+            <div style="width: 22%; background: #e6b333; color: #1a3373; display: flex; justify-content: center; align-items: center; cursor: pointer; border-radius: 3px;" onclick="window.location='/employee/salary';">Зарплата</div>
+            <div style="width: 22%; background: #e6b333; color: #1a3373; display: flex; justify-content: center; align-items: center; cursor: pointer; border-radius: 3px;" onclick="window.location='/employee/work';">Работа</div>
         }
     </div>
     <div style="display: flex; justify-content: end; gap: 2%; width: 50%">
-        <div style="width: 22%; background: #e6b333; color: #1a3373; display: flex; justify-content: center; align-items: center; cursor: pointer; border-radius: 3px;" onclick="window.location='/registration/user';">Регистрация</div>
-        <div style="width: 22%; background: #e6b333; color: #1a3373; display: flex; justify-content: center; align-items: center; cursor: pointer; border-radius: 3px;" onclick="window.location='/login/user';">Вход</div>
+        <div style="width: 22%; background: #e6b333; color: #1a3373; display: flex; justify-content: center; align-items: center; cursor: pointer; border-radius: 3px;" onclick="window.location='/login/employee';">Вход</div>
     </div>
 </header>
 		    

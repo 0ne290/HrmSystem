@@ -10,6 +10,21 @@ public class Employee
         DynamicPartOfSalt = RandomNumberGenerator.GetHexString(128);
     }
 
+    // Copy constructor
+    public Employee(Employee copied)
+    {
+        var copy = new Employee(DynamicPartOfSalt, Password, Efficiency, PremiumRate, Premium, SalaryRate, Salary)
+            {
+                Login = Login,
+                Name = Name,
+                Contact = Contact,
+                CurrentProjectUrl = CurrentProjectUrl,
+                ProjectCompleted = ProjectCompleted,
+                PositionGuid = PositionGuid,
+                PositionNavigation = PositionNavigation
+            };
+    }
+
     // Constructor for EF
     private Employee(string dynamicPartOfSalt, string password, int efficiency, decimal premiumRate, decimal premium, decimal salaryRate, decimal salary)
     {
