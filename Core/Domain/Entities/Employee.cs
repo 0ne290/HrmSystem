@@ -72,7 +72,7 @@ public class Employee
 
     public string Contact { get; set; } = null!;
 
-    public string CurrentProjectUrl { get; set; } = null!;
+    public string CurrentProjectUrl { get; set; } = null!;// Логика валидации данных должна содержаться на уровнях Application и Domain в зависимости от типа валидации. Если валидация является частью предметной логики и должна быть применена во всех приложениях, то она должна находится на уровне Domain. Также нужно понимать разницу между валидацией данных и валидацией формата - вся валидация, происходящая на уровне представления, является валидацией формата
     
     public bool ProjectCompleted { get; set; }
 

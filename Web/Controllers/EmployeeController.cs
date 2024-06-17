@@ -1,9 +1,8 @@
 using System.Security.Claims;
 using Application.Interactors;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.Pages;
 
 namespace Web.Controllers;
 
@@ -17,9 +16,13 @@ public class EmployeeController(EmployeeIntreractor employeeIntreractor, ILogger
     {
         var login = HttpContext.User.FindFirst(ClaimTypes.Name)!.Value;
         
-        var salary = await employeeIntreractor.TryGetSalary(login);
+        var salary = await employeeIntreractor.TryGetSalary(login);// А вот и идеальный момент для применения паттернов "Презентатор" и "Модель представления" - данные из этого DTO должны быть приведены к адекватному виду (добавить символы рубля и округлить числа до целых)
         
-        return View("Salary", salary);
+        if (salary != null)
+            return View("Salary", salary);
+        
+        logger.LogError("Employee with login {login} does not exist", login);
+        return Errors.Return500(this);
     }
     
     [HttpGet]
@@ -33,26 +36,23 @@ public class EmployeeController(EmployeeIntreractor employeeIntreractor, ILogger
         if (work != null)
             return View("Work", work);
         
-        logger.LogError("User with login {login} does not exist", login);
-        return ActionResultFactory.CustomServerErrorView(this);
-
+        logger.LogError("Employee with login {login} does not exist", login);
+        return Errors.Return500(this);
     }
     
     [HttpPost]
     [Route("work")]
     public async Task<IActionResult> PostWork(string currentProjectUrl, bool projectCompleted)
     {
-        if (string.IsNullOrEmpty(currentProjectUrl))
+        if (Uri.IsWellFormedUriString(currentProjectUrl, UriKind.Absolute))// Логика валидации данных должна содержаться на уровнях Application и Domain в зависимости от типа валидации. Если валидация является частью предметной логики и должна быть применена во всех приложениях, то она должна находится на уровне Domain. Также нужно понимать разницу между валидацией данных и валидацией формата - вся валидация, происходящая на уровне представления, является валидацией формата
             return BadRequest();
 
-        var lodLogin = HttpContext.User.FindFirst(ClaimTypes.Name)!.Value;
-        var user = new UserRequestDto(login, password, name, contact,
-            string.IsNullOrEmpty(defaultAddress) ? null : defaultAddress);
+        var login = HttpContext.User.FindFirst(ClaimTypes.Name)!.Value;
 
-        if (!await userInteractor.Edit(lodLogin, user))
-            return BadRequest();
-        
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        return Redirect("/login/user");
+        if (await employeeIntreractor.TryEditWork(login, currentProjectUrl, projectCompleted))
+            return Redirect("/employee/work");
+
+        logger.LogError("Employee with login {login} does not exist", login);
+        return Errors.Return500(this);
     }
 }

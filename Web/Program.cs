@@ -1,3 +1,6 @@
+using Application.Interactors;
+using Dal;
+using Dal.Daos;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -49,17 +52,17 @@ internal static class Program
                     
                 });
             builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, RedirectAfterFailedAuthentication>();
-            builder.Services.AddScoped<UserInteractor>(serviceProvider =>
+            builder.Services.AddScoped<EmployeeIntreractor>(serviceProvider =>
             {
-                var optionsBuilder = new DbContextOptionsBuilder<TransportCompanyContext>();
+                var optionsBuilder = new DbContextOptionsBuilder<HrmSystemContext>();
                 var connectionString = serviceProvider.GetService<IConfiguration>()!.GetConnectionString("MySql")!;
 
                 var options = optionsBuilder.UseLazyLoadingProxies().UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
                     .Options;
 
-                return new UserInteractor(new UserDao(new TransportCompanyContext(options), serviceProvider.GetRequiredService<ILogger<UserDao>>()), new OrderDao(new TransportCompanyContext(options)), new TruckDao(new TransportCompanyContext(options)));
+                return new EmployeeIntreractor(new EmployeeDao(new HrmSystemContext(options)));
             });
-            builder.Services.AddDbContext<TransportCompanyContext>((serviceProvider, options) =>
+            builder.Services.AddDbContext<HrmSystemContext>((serviceProvider, options) =>
             {
                 var connectionString = serviceProvider.GetService<IConfiguration>()!.GetConnectionString("MySql")!;
 

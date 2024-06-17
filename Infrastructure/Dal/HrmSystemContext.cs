@@ -50,4 +50,6 @@ public sealed class HrmSystemContext : DbContext
     }
 
     public DbSet<Employee> Employees { get; set; } = null!;
+    
+    public DbSet<Position> Positions { get; set; } = null!;
 }
