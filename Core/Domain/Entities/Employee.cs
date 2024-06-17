@@ -11,18 +11,15 @@ public class Employee
     }
 
     // Copy constructor
-    public Employee(Employee copied)
+    public Employee(Employee copied) : this(copied.DynamicPartOfSalt, copied.Password, copied.Efficiency, copied.PremiumRate, copied.Premium, copied.SalaryRate, copied.Salary)
     {
-        var copy = new Employee(DynamicPartOfSalt, Password, Efficiency, PremiumRate, Premium, SalaryRate, Salary)
-            {
-                Login = Login,
-                Name = Name,
-                Contact = Contact,
-                CurrentProjectUrl = CurrentProjectUrl,
-                ProjectCompleted = ProjectCompleted,
-                PositionGuid = PositionGuid,
-                PositionNavigation = PositionNavigation
-            };
+        Login = copied.Login;
+        Name = copied.Name;
+        Contact = copied.Contact;
+        CurrentProjectUrl = copied.CurrentProjectUrl;
+        ProjectCompleted = copied.ProjectCompleted;
+        PositionGuid = copied.PositionGuid;
+        //PositionNavigation = copied.PositionNavigation;// Почему-то если явно устанавливать в своем коде значения виртуальным навигационным свойствам, то EF будет бросать исключение "The instance of entity type cannot be tracked" даже если получаемые сущности не отслеживаются
     }
 
     // Constructor for EF

@@ -4,10 +4,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dal.Daos;
 
-public class EmployeeDao(HrmSystemContext dbContext) : IEmployeeDao
+public class EmployeeDao : IEmployeeDao
 {
+    public EmployeeDao(HrmSystemContext dbContext)
+    {
+        _dbContext = dbContext;
+        _dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;// Способ не отслеживать по умолчанию объекты получаемых сущностей и избавиться от постоянных AsNoTracking()
+    }
+    
     public async Task<Employee> GetByLogin(string login) =>
-        await dbContext.Employees.AsNoTracking().FirstAsync(u => u.Login == login);
+        await _dbContext.Employees.FirstAsync(u => u.Login == login);
 
     public async Task Update(string login, Action<Employee> updater)
     {
@@ -17,22 +23,24 @@ public class EmployeeDao(HrmSystemContext dbContext) : IEmployeeDao
 
         if (oldEmployee.Login != newEmployee.Login)
         {
-            await dbContext.Employees.AddAsync(newEmployee);
-            dbContext.Employees.Remove(oldEmployee);
+            await _dbContext.Employees.AddAsync(newEmployee);
+            _dbContext.Employees.Remove(oldEmployee);
         }
         else
-            dbContext.Employees.Update(newEmployee);
+            _dbContext.Employees.Update(newEmployee);
 
-        await dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
     }
 
     public void Dispose()
     {
-        dbContext.Dispose();
+        _dbContext.Dispose();
     }
 
     public async ValueTask DisposeAsync()
     {
-        await dbContext.DisposeAsync();
+        await _dbContext.DisposeAsync();
     }
+
+    private readonly HrmSystemContext _dbContext;
 }

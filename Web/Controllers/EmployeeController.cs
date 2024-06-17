@@ -2,14 +2,13 @@ using System.Security.Claims;
 using Application.Interactors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Web.Pages;
 using Web.Presenters;
 
 namespace Web.Controllers;
 
 [Authorize(Roles = "Employee")]
 [Route("employee")]
-public class EmployeeController(EmployeeIntreractor employeeIntreractor, ILogger<EmployeeController> logger) : Controller
+public class EmployeeController(EmployeeIntreractor employeeIntreractor) : Controller
 {
     [HttpGet]
     [Route("salary")]
@@ -28,13 +27,9 @@ public class EmployeeController(EmployeeIntreractor employeeIntreractor, ILogger
     {
         var login = HttpContext.User.FindFirst(ClaimTypes.Name)!.Value;
         
-        var work = await employeeIntreractor.TryGetWork(login);
+        var work = await employeeIntreractor.GetWork(login);
         
-        if (work != null)
-            return View("Work", work);
-        
-        logger.LogError("Employee with login {login} does not exist", login);
-        return Errors.Return500(this);
+        return View("Work", work);
     }
     
     [HttpPost]
@@ -46,10 +41,8 @@ public class EmployeeController(EmployeeIntreractor employeeIntreractor, ILogger
 
         var login = HttpContext.User.FindFirst(ClaimTypes.Name)!.Value;
 
-        if (await employeeIntreractor.TryEditWork(login, currentProjectUrl, projectCompleted))
-            return Redirect("/employee/work");
-
-        logger.LogError("Employee with login {login} does not exist", login);
-        return Errors.Return500(this);
+        await employeeIntreractor.EditWork(login, currentProjectUrl, projectCompleted);
+        
+        return Redirect("/employee/work");
     }
 }
