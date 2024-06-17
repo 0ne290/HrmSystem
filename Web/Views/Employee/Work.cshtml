@@ -78,19 +78,31 @@ xmlns:xlink="http://www.w3.org/1999/xlink" style="position: absolute">
          </label>
         <input class="user-input" type="text" name="currentProjectUrl" id="name" placeholder="URL текущего проекта" value="@Model.CurrentProjectUrl"/>
       </div> 
-    <div>
-      
-      <label>Завершен</label>
-      @if (Model.ProjectCompleted)
-      {
-        <input type="checkbox" name="projectCompleted" value="true" checked/>
-      }
-      else
-      {
-        <input type="checkbox" name="projectCompleted" value="true"/>
-      }
-    </div> 
-    <div>
+    @if (Model.ProjectCompleted)
+    {
+      <span class="check-label">Проект завершен</span>
+      <div class="radio-check">
+        <input type="radio" class="radio-no" id="no" name="projectCompleted" value="false">
+        <label for="no"><i class="fa fa-times"></i></label>
+        <input type="radio" class="radio-yes" id="yes" name="projectCompleted" value="true" checked>
+        <label for="yes"><i class="fa fa-check"></i></label>
+        <span class="switch-selection"></span>
+      </div>
+      <div class="clear"></div>
+    }
+    else
+    {
+      <span class="check-label">Проект завершен</span>
+      <div class="radio-check">
+        <input type="radio" class="radio-no" id="no" name="projectCompleted" value="false" checked>
+        <label for="no"><i class="fa fa-times"></i></label>
+        <input type="radio" class="radio-yes" id="yes" name="projectCompleted" value="true">
+        <label for="yes"><i class="fa fa-check"></i></label>
+        <span class="switch-selection"></span>
+      </div>
+      <div class="clear"></div>
+    }
+  <div>
       <input type="submit" value="Изменить" />
     </div>
   </form>  
