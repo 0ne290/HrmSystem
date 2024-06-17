@@ -8,28 +8,35 @@ public class EmployeeIntreractor(IEmployeeDao employeeDao) : IDisposable, IAsync
 {
     public async Task<bool> TryLogin(string login, string password)
     {
-        var employee = await employeeDao.TryGetByLogin(login);
-
-        return employee != null && employee.Hash(password) == employee.Password;
+        try
+        { 
+            var employee = await employeeDao.GetByLogin(login);
+            
+            return employee.Hash(password) == employee.Password;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
-    public async Task<bool> TryEditWork(string login, string projectUrl, bool projectCompleted) =>
-        await employeeDao.TryUpdate(login, e =>
+    public async Task EditWork(string login, string projectUrl, bool projectCompleted) =>
+        await employeeDao.Update(login, e =>
         {
             e.CurrentProjectUrl = projectUrl;
             e.ProjectCompleted = projectCompleted;
         });
 
-    public async Task<WorkDto?> TryGetWork(string login)
+    public async Task<WorkDto> GetWork(string login)
     {
-        var employee = await employeeDao.TryGetByLogin(login);
+        var employee = await employeeDao.GetByLogin(login);
         
         return EmployeeMapper.EmployeeToWorkDto(employee);
     }
     
-    public async Task<SalaryDto?> TryGetSalary(string login)
+    public async Task<SalaryDto> GetSalary(string login)
     {
-        var employee = await employeeDao.TryGetByLogin(login);
+        var employee = await employeeDao.GetByLogin(login);
         
         return EmployeeMapper.EmployeeToSalaryDto(employee);
     }

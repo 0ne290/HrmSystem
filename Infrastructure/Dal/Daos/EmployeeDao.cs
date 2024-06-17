@@ -6,36 +6,24 @@ namespace Dal.Daos;
 
 public class EmployeeDao(HrmSystemContext dbContext) : IEmployeeDao
 {
-    public async Task<Employee?> TryGetByLogin(string login) =>
-        await dbContext.Employees.AsNoTracking().FirstOrDefaultAsync(u => u.Login == login);
+    public async Task<Employee> GetByLogin(string login) =>
+        await dbContext.Employees.AsNoTracking().FirstAsync(u => u.Login == login);
 
-    public async Task<bool> TryUpdate(string login, Action<Employee> updater)
+    public async Task Update(string login, Action<Employee> updater)
     {
-        try
+        var oldEmployee = await GetByLogin(login);
+        var newEmployee = new Employee(oldEmployee);
+        updater(newEmployee);
+
+        if (oldEmployee.Login != newEmployee.Login)
         {
-            var oldEmployee = await TryGetByLogin(login);
-            if (oldEmployee == null)
-                return false;
-
-            var newEmployee = new Employee(oldEmployee);
-            updater(newEmployee);
-
-            if (oldEmployee.Login != newEmployee.Login)
-            {
-                await dbContext.Employees.AddAsync(newEmployee);
-                dbContext.Employees.Remove(oldEmployee);
-            }
-            else
-                dbContext.Employees.Update(newEmployee);
-
-            await dbContext.SaveChangesAsync();
-
-            return true;
+            await dbContext.Employees.AddAsync(newEmployee);
+            dbContext.Employees.Remove(oldEmployee);
         }
-        catch (Exception)
-        {
-            return false;
-        }
+        else
+            dbContext.Employees.Update(newEmployee);
+
+        await dbContext.SaveChangesAsync();
     }
 
     public void Dispose()

@@ -17,13 +17,9 @@ public class EmployeeController(EmployeeIntreractor employeeIntreractor, ILogger
     {
         var login = HttpContext.User.FindFirst(ClaimTypes.Name)!.Value;
         
-        var salary = await employeeIntreractor.TryGetSalary(login);// А вот и идеальный момент для применения паттернов "Презентатор" и "Модель представления" - данные из этого DTO должны быть приведены к адекватному виду (добавить символы рубля и округлить числа до целых)
+        var salary = await employeeIntreractor.GetSalary(login);// А вот и идеальный момент для применения паттернов "Презентатор" и "Модель представления" - данные из этого DTO должны быть приведены к адекватному виду (добавить символы рубля и округлить числа до целых)
         
-        if (salary != null)
-            return View("Salary", SalaryPresenter.SalaryDtoToSalaryViewModel(salary));
-        
-        logger.LogError("Employee with login {login} does not exist", login);
-        return Errors.Return500(this);
+        return View("Salary", SalaryPresenter.SalaryDtoToSalaryViewModel(salary));
     }
     
     [HttpGet]
